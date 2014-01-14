@@ -43,8 +43,13 @@ Include the scripts in the body section of the HTML document, just before the `<
         },
 
         // If you want to override default behavior of script - wait on something? Popup or sth else
-        callback: false
+        callback: false,
+
+        /// ID of element
+        container: 'ytplayer'
 	};
+
+	YT_GA.configYouTubePlayer.players.push(configYouTubePlayer);
 </script>	
 ```
 

@@ -1,0 +1,31 @@
+<html>
+<head>
+    <script src="youtube.ga.js"></script>
+    <script>
+        var configYouTubePlayer = {
+            videoID: 'yo6JGhVILjY',
+            height: 390,
+            width: 640,
+            trackProgress: true,
+            trackPlaybackQuality: true,
+            playerVars: {
+                'autohide': 1,
+                'autoplay': 1,
+                'rel': 0,
+                'theme': 'light'
+            },
+            callback: false,
+            container: 'ytplayer'
+        };
+
+        YT_GA.configYouTubePlayer.players.push(configYouTubePlayer);
+    </script>
+</head>
+<body>
+
+<div id="ytplayer"></div>
+
+
+
+</body>
+</html>

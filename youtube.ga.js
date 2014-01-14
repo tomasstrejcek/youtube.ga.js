@@ -12,42 +12,45 @@ tag.src = "//youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-var YT_GA = YT_GA || {};
+var YT_GA = YT_GA || {
+    configYouTubePlayer: {
+        players: [],
+        callback: false
+    }
+};
 
 function onYouTubePlayerAPIReady() {
-    // Replace the 'ytplayer' element with an <iframe> and
-    // YouTube player after the API code downloads.
-    YT_GA.playerOptions = {
-        height: configYouTubePlayer.height,
-        width: configYouTubePlayer.width,
-        videoId: configYouTubePlayer.videoID,
-        playerVars: {},
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange,
-            'onPlaybackQualityChange': onPlayerPlaybackQualityChange
-        }
-    };
-
-    for (var setting in configYouTubePlayer.playerVars) {
-        if (!configYouTubePlayer.playerVars.hasOwnProperty(setting)) {
-            continue;
-        }
-
-        playerOptions.playerVars[setting] = configYouTubePlayer.playerVars[setting];
-    }
-
-    if('callback' in configYouTubePlayer) {
-        configYouTubePlayer.callback(YT_GA.onReady);
+    if ('callback' in YT_GA.configYouTubePlayer && typeof YT_GA.configYouTubePlayer.callback === 'function') {
+        YT_GA.configYouTubePlayer.callback(YT_GA.onReady);
     } else {
         YT_GA.onReady();
     }
-
-
 }
 
-YT_GA.onReady = function() {
-    YT_GA.player = new YT.Player('ytplayer', YT_GA.playerOptions);
+YT_GA.onReady = function () {
+    for(player in YT_GA.configYouTubePlayer.players) {
+        var p = YT_GA.configYouTubePlayer.players[player];
+        YT_GA.playerOptions = {
+            height: p.height,
+            width: p.width,
+            videoId: p.videoID,
+            playerVars: {},
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange,
+                'onPlaybackQualityChange': onPlayerPlaybackQualityChange
+            }
+        };
+
+        for (var setting in p.playerVars) {
+            if (!p.playerVars.hasOwnProperty(setting)) {
+                continue;
+            }
+            YT_GA.playerOptions.playerVars[setting] = p.playerVars[setting];
+        }
+
+        YT_GA.player = new YT.Player(p.container, YT_GA.playerOptions);
+    }
 }
 
 function onPlayerReady(event) {
@@ -67,7 +70,7 @@ function onPlayerProgressChange() {
         return;
     }
 
-     // Calculate percent complete
+    // Calculate percent complete
     YT_GA.timePercentComplete = Math.round(YT_GA.player.getCurrentTime() / YT_GA.player.getDuration() * 100);
 
     var progress;
@@ -126,7 +129,7 @@ function onPlayerStateChange(event) {
     if (typeof _gaq === 'undefined') {
         return;
     }
-    
+
     // Calculate percent complete
     YT_GA.timePercentComplete = Math.round(YT_GA.player.getCurrentTime() / YT_GA.player.getDuration() * 100);
 
