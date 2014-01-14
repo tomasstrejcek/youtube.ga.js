@@ -40,7 +40,10 @@ Include the scripts in the body section of the HTML document, just before the `<
             'autoplay': 1,
             'rel': 0,
             'theme': 'light'
-        }
+        },
+
+        // If you want to override default behavior of script - wait on something? Popup or sth else
+        callback: false
 	};
 </script>	
 ```

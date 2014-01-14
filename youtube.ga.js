@@ -1,8 +1,9 @@
 /*!
- * youtube.ga.js | v0.3
+ * youtube.ga.js | v0.3.1
  * Copyright (c) 2012 - 2013 Sander Heilbron (http://sanderheilbron.nl)
  * Edits by Ali Karbassi (http://karbassi.com)
  * MIT licensed
+ * Cleaner code, only Universal Analytics / analytics.js; removed minified version - everybody should tweak this - modified by Tomas Strejce //tomas-strejcek.cz
  */
 
 // Load the IFrame Player API code asynchronously.
@@ -16,7 +17,7 @@ var YT_GA = YT_GA || {};
 function onYouTubePlayerAPIReady() {
     // Replace the 'ytplayer' element with an <iframe> and
     // YouTube player after the API code downloads.
-    var playerOptions = {
+    YT_GA.playerOptions = {
         height: configYouTubePlayer.height,
         width: configYouTubePlayer.width,
         videoId: configYouTubePlayer.videoID,
@@ -36,7 +37,17 @@ function onYouTubePlayerAPIReady() {
         playerOptions.playerVars[setting] = configYouTubePlayer.playerVars[setting];
     }
 
-    YT_GA.player = new YT.Player('ytplayer', playerOptions);
+    if('callback' in configYouTubePlayer) {
+        configYouTubePlayer.callback(YT_GA.onReady);
+    } else {
+        YT_GA.onReady();
+    }
+
+
+}
+
+YT_GA.onReady = function() {
+    YT_GA.player = new YT.Player('ytplayer', YT_GA.playerOptions);
 }
 
 function onPlayerReady(event) {
